@@ -1,3 +1,1 @@
-# Bienvenido
-## Hola
-### Sigor
+Este repositorio contiene todo lo que he hecho para el TFG, incluidos notas y todos los libros para su correcto funcionamiento. Una vez terminado el TFG se abrirá al público para quien quiera continue con la investigación
