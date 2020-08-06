@@ -1,4 +1,4 @@
-# Instrucciones para realizar la instalacion de Jupyter Lab y sus distintas bilbiotecas
+# Instrucciones para realizar la instalacion de Jupyter Lab y sus distintas bilbiotecas, y la configuración de Traffic
 
 Hay dos formas de instalar lo necesario para poder usar Jupyter Books/Lab: la fácil y la "difícil".  
 La primera de ellas consiste en descargar [Anaconda](https://www.anaconda.com/products/individual) e instalar las librerías que en la página de instrucciones queda bastante explícito el [cómo se hace](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-pkgs.html).    
@@ -26,4 +26,10 @@ Lo siguientes que se tiene que instalar son los "widgets" de Jupyter Lab. Los co
 
 Finalmente, para comprobar que la instalacion ha sido correcta se iniciará por el terminal el comando: ```jupyter lab```
 ## Configuración de Traffic
-Para poder acceder al Impala Shell de OpenSky se necesita unas claves de acceso que previamente hay que solicitar. 
+Para poder acceder al Impala Shell de OpenSky se necesita unas claves de acceso que previamente hay que solicitar en [aquí](https://opensky-network.org/index.php?option=com_users&view=login&return=aHR0cHM6Ly9vcGVuc2t5LW5ldHdvcmsub3JnL2RhdGEvYXBwbHk=).  
+Una vex obtenidas las claves de acceso, se iniciará un libro de jupyter lab, y se pondrán lo siguiente:  
+```python
+import traffic
+traffic.config_file
+ ```
+ Que dará la ubicación del archivo de configuración de la librería. En ese archivo se pondran las credenciales de OpenSky y la referencia a los mapas de EUROCONTROL. En caso de necesitar más cosas, [aquí](https://traffic-viz.github.io/opensky_impala.html) se encuentran las intstrucciones.
