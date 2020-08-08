@@ -132,3 +132,5 @@ dmypy.json
 .ipynb_checkpoints
 TFG.docx
 libros/sector_nest/
+libros/datos_sectores/
+libros/.ipynb_checkpoints/
