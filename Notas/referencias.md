@@ -8,7 +8,7 @@
 [SciKit Learn](https://scikit-learn.org/stable/supervised_learning.html#supervised-learning)  
 [Modelos lineales](https://scikit-learn.org/stable/modules/linear_model.html)  
 [Regresion Lineal Tipos](https://machinelearningmastery.com/linear-regression-for-machine-learning/)  
-
+[Formato del ADS_B](https://mode-s.org/decode/index.html)
 
 ## Paper para citar  
 [Libreria Traffic](https://traffic-viz.github.io/publications.html)
