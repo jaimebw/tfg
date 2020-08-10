@@ -12,3 +12,7 @@ def probartraffic():
         print("Traffic instalado")
     except:
         print("La librería no esta correctamente instalada")
+
+def cargardatos(carpeta,nombre_datos):
+    datos_cargados = traffic.core.Traffic.from_file(carpeta+nombre_datos)
+    return datos_cargados
