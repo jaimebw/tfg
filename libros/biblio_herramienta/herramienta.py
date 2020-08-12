@@ -1,4 +1,4 @@
-import traffic
+
 def guardarcsv(archivo, nombre_archivo,carpeta_datos_csv ):
     # esta funciona genera una carpeta sino existe, y guarda los datos descargados en esta
     if not os.path.exists(carpeta_datos_csv):
@@ -29,9 +29,24 @@ def niveldevuelo(altitud_metros):
         pass
 
 def numeroaeronavesector(df):
+    import traffic
         # saca el numero de aeronaves en la BBDD
     try:
         numero = df.data["callsign"].nunique()
         print("El numero de aeronaves es de ",numero)
     except:
         print("La BBDD no está correctamente configurada")
+
+def representartrayectoria(traffic_data,sector ='LECMBLU'):
+    # esta funcion representa las trayectorias dentro de la BBDD sobre el sector que se estudiar
+    import matplotlib.pyplot as plt
+    from traffic.core.projection import EuroPP
+    from traffic.data import nm_airspaces
+    from traffic.drawing import countries
+    with plt.style.context("traffic"):
+        fig, ax = plt.subplots(
+            subplot_kw=dict(projection=EuroPP()))
+        nm_airspaces[sector].plot(ax,alpha = 1)
+        ax.add_feature(countries())
+        ax.set_extent((-6, 1, 40, 50))
+        traffic_data.plot(ax,alpha = 0.2)
