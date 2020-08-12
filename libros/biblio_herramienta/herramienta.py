@@ -27,3 +27,11 @@ def niveldevuelo(altitud_metros):
         return fl
     except:
         pass
+
+def numeroaeronavesector(df):
+        # saca el numero de aeronaves en la BBDD
+    try:
+        numero = df.data["callsign"].nunique()
+        print("El numero de aeronaves es de ",numero)
+    except:
+        print("La BBDD no está correctamente configurada")
