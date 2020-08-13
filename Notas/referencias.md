@@ -17,4 +17,12 @@
 [Jupyter Lab](https://jupyterlab.readthedocs.io/en/stable/index.html)  
 [Librería Traffic](https://traffic-viz.github.io/installation.html)  
 
+## Machine Learning: cosas a tener en cuenta
+[Unwrap](https://traffic-viz.github.io/traffic.core.flight.html#traffic.core.Flight.unwrap) este método permite poner el rumbo de los aviones de mejor manera  
+[pickle](https://www.datacamp.com/community/tutorials/pickle-python-tutorial) puede resultar muy útil para guadar los resultados de los algoritmos de ML 
 
+## Algoritmos de ML para cluster  
+[DBS](https://scikit-learn.org/stable/modules/clustering.html#dbscan) este está implementado dentro de [traffic](https://traffic-viz.github.io/clustering.html)
+
+## Ideas de ML  
+Podria aplicar en primer lugar un cluster de las trayectorias para poder agruparlas, y luego aplicar [CPA](https://traffic-viz.github.io/traffic.core.traffic.html#traffic.core.Traffic.closest_point_of_approach) y poder definir estos puntos dentro de un vector y sobre un mapa. Habría que condicionar 
