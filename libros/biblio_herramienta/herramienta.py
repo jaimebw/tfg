@@ -1,3 +1,5 @@
+import traffic
+from traffic.core import Traffic
 
 def guardarcsv(archivo, nombre_archivo,carpeta_datos_csv ):
     # esta funciona genera una carpeta sino existe, y guarda los datos descargados en esta
@@ -17,7 +19,7 @@ def probartraffic():
 
 def cargardatos(carpeta,nombre_datos):
     # carga los datos descargados desde una carpeta
-    datos_cargados = traffic.core.Traffic.from_file(carpeta+nombre_datos)
+    datos_cargados = Traffic.from_file(carpeta+nombre_datos)
     return datos_cargados
 
 def niveldevuelo(altitud_metros):
