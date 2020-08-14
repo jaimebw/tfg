@@ -26,3 +26,4 @@
 
 ## Ideas de ML  
 Podria aplicar en primer lugar un cluster de las trayectorias para poder agruparlas, y luego aplicar [CPA](https://traffic-viz.github.io/traffic.core.traffic.html#traffic.core.Traffic.closest_point_of_approach) y poder definir estos puntos dentro de un vector y sobre un mapa. Habría que condicionar 
+
