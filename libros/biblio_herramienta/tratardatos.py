@@ -2,7 +2,7 @@ import os
 import traffic
 from traffic.core import Traffic
 
-def guardarcsv(archivo, nombre_archivo,carpeta_datos_csv ):
+def guardarcsv(archivo, nombre_archivo,carpeta_datos_csv = "datos_sectores" ):
     # esta funciona genera una carpeta sino existe, y guarda los datos descargados en esta
     if not os.path.exists(carpeta_datos_csv):
         os.mkdir(carpeta_datos_csv)
