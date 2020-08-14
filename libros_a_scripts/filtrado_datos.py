@@ -33,7 +33,7 @@ nan_rows = vuelos_prueba.data[vuelos_prueba.data.isnull().any(1)]
 
 # Identificar las aeronaves que tienen problemas con esto:
 ave_huecos = nan_rows.callsign.value_counts()
-
+list_ave = []
 # se identifican las aeronaves que tienen más de 10 datos ads-b con fallos
 v_filtrado = vuelos_prueba
 for count, values in enumerate(ave_huecos):
