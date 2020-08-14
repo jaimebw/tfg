@@ -6,9 +6,10 @@ import numpy as np
 
 
 carpetaDatos = r'datos_sectores/'
+
 nombreDatos = "datos_bilbao.csv"
 
-vuelos_sintratar = cargardatos(carpetaDatos,nombreDatos) # carga los datos desde el archivo .csv
+vuelos = cargardatos(carpetaDatos,nombreDatos) # carga los datos desde el archivo .csv
 # se copian los datos en otra variable para no cargarlos de nuevo desde el archivo .csv
 vuelos_prueba = vuelos.data.copy()  # este comando copia los datos
 vuelos_prueba = traffic.core.Traffic(vuelos_prueba) # este comando los transforma en un objeto de traffic
@@ -17,8 +18,8 @@ vuelos_prueba = traffic.core.Traffic(vuelos_prueba) # este comando los transform
 aviones_entierra =  vuelos_prueba.data[vuelos_prueba.data["onground"] == True].index
 vuelos_prueba.data.drop(aviones_entierra,inplace = True)
 # elimina las aeronaves que tiene VR distinta de cero
-vuelos_prueba.data.drop(aviones_cambiandoFL,inplace = True)
 aviones_cambiandoFL = vuelos_prueba.data[vuelos_prueba.data["vertical_rate"]!= 0.0].index 
+vuelos_prueba.data.drop(aviones_cambiandoFL,inplace = True)
 # elimina las aeronaves que está debajo del FL 345
 aviones_debajosector = vuelos_prueba.data[vuelos_prueba.data["altitude"] <= 34500].index
 vuelos_prueba.data.drop(aviones_debajosector,inplace = True)
@@ -65,6 +66,7 @@ for count, name in enumerate(aves_huecos):
     ave_impute = pd.DataFrame(my_imputer.fit_transform(vuelos_prueba))
 
 Var_time = ["hour", "last_position", "timestamp"]
-v_filtrado1[Var_time] = v_filtrado.data[Var_time] = v_filtrado.data[Var_time].astype("datetime64[ns, UTC]")
-
+v_filtrado.data[Var_time] = v_filtrado.data[Var_time] = v_filtrado.data[Var_time].astype("datetime64[ns, UTC]")
 guardarcsv(v_filtrado,"datos_filtrados",carpetaDatos)
+
+print("Proceso finalizado")
