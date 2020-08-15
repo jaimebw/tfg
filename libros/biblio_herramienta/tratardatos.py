@@ -1,6 +1,8 @@
 import os
 import traffic
 from traffic.core import Traffic
+import pandas as pd
+
 
 def guardarcsv(archivo, nombre_archivo,carpeta_datos_csv = "datos_sectores" ):
     # esta funciona genera una carpeta sino existe, y guarda los datos descargados en esta
@@ -16,10 +18,14 @@ def cargardatos(carpeta,nombre_datos):
     return datos_cargados
 
 def cargardatosfiltrados(carpeta,nombre_datos):
-    # carga los datos descargados desde una carpeta 
+    # carga los datos descargados desde una carpeta y pone formato de tiempos
+    
+    datos_cargados = datos_cargados.drop(["Unnamed: 0","alert","geoaltitude",'hour','last_position','onground','spi','squawk','vertical_rate'],axis = 1)
+
     datos_cargados = Traffic.from_file(carpeta+nombre_datos)
     Var_time = ["hour", "last_position", "timestamp"]
     datos_cargados.data[Var_time] = datos_cargados.data[Var_time] = datos_cargados.data[Var_time].astype("datetime64[ns, UTC]")
+    
     return datos_cargados
 
     
