@@ -25,5 +25,7 @@
 [DBS](https://scikit-learn.org/stable/modules/clustering.html#dbscan) este está implementado dentro de [traffic](https://traffic-viz.github.io/clustering.html)
 
 ## Ideas de ML  
-Podria aplicar en primer lugar un cluster de las trayectorias para poder agruparlas, y luego aplicar [CPA](https://traffic-viz.github.io/traffic.core.traffic.html#traffic.core.Traffic.closest_point_of_approach) y poder definir estos puntos dentro de un vector y sobre un mapa. Habría que condicionar 
+* Podria aplicar en primer lugar un cluster de las trayectorias para poder agruparlas, y luego aplicar [CPA](https://traffic-viz.github.io/traffic.core.traffic.html#traffic.core.Traffic.closest_point_of_approach) y poder definir estos puntos dentro de un vector y sobre un mapa. Habría que condicionar   
+* La idea para poder aplicar la BBDD después del filtrado es poder identificar cada vuelo como una trayectoria distinta 
+, ser capaz de memter la trayectoria por objeto y vuelo, con velocidad y rumbo de la aeroanve. Como si fueran series de tiempo 
 
