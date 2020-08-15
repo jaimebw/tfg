@@ -9,7 +9,6 @@ def probartraffic():
     except:
         print("La librería no esta correctamente instalada")
 
-
 def niveldevuelo(altitud_metros):
     # devuelve el nivel de vuelo 
     try:
@@ -27,7 +26,7 @@ def numeroaeronavesector(df):
     except:
         print("La BBDD no está correctamente configurada")
 
-def representartrayectoria(traffic_data,sector ='LECMBLU'):
+def representarSobreSector(traffic_data,sector ='LECMBLU'):
     # esta funcion representa las trayectorias dentro de la BBDD sobre el sector que se estudiar
     import matplotlib.pyplot as plt
     from traffic.core.projection import EuroPP
