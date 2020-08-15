@@ -20,12 +20,11 @@ def cargardatos(carpeta,nombre_datos):
 def cargardatosfiltrados(carpeta,nombre_datos):
     # carga los datos descargados desde una carpeta y pone formato de tiempos
     
-    datos_cargados = datos_cargados.drop(["Unnamed: 0","alert","geoaltitude",'hour','last_position','onground','spi','squawk','vertical_rate'],axis = 1)
-
+    
     datos_cargados = Traffic.from_file(carpeta+nombre_datos)
     Var_time = ["hour", "last_position", "timestamp"]
     datos_cargados.data[Var_time] = datos_cargados.data[Var_time] = datos_cargados.data[Var_time].astype("datetime64[ns, UTC]")
-    
+    datos_cargados.data = datos_cargados.data.drop(["Unnamed: 0.1","Unnamed: 0","alert","geoaltitude",'hour','last_position','onground','spi','squawk','vertical_rate'],axis = 1)
     return datos_cargados
 
     
