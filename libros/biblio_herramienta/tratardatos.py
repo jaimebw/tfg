@@ -1,9 +1,19 @@
-import os
 import traffic
 from traffic.core import Traffic
 import pandas as pd
+import os
+import matplotlib.pyplot as plt
 
 
+def guardarimagen(carpeta_imagenes,nombre_figura):
+     # esta funcion guarda las imágenes por directorios, el principal es      
+     # imagenes_libros/carpeta_imágenes/nombre_figura.png
+    if not os.path.exists("imagenes_libros"):
+        os.mkdir("imagenes_libros")
+    if not os.path.exists("imagenes_libros/"+carpeta_imagenes):
+        os.mkdir("imagenes_libros/"+carpeta_imagenes)
+    plt.savefig(fname = "imagenes_libros/" + carpeta_imagenes+"/"+nombre_figura,dpi = 300)
+    
 def guardarcsv(archivo, nombre_archivo,carpeta_datos_csv = "datos_sectores" ):
     # esta funciona genera una carpeta sino existe, y guarda los datos descargados en esta
     if not os.path.exists(carpeta_datos_csv):
