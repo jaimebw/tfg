@@ -39,3 +39,5 @@ def representarSobreSector(traffic_data,sector ='LECMBLU'):
         ax.add_feature(countries())
         ax.set_extent((-6, 1, 40, 50))
         traffic_data.plot(ax,alpha = 0.2)
+def ejesespaña():
+    return (-6,0, 42.7, 44.5)
