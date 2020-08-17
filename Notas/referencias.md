@@ -23,7 +23,7 @@
 
 ## Algoritmos de ML para cluster  
 [DBS](https://scikit-learn.org/stable/modules/clustering.html#dbscan) este está implementado dentro de [traffic](https://traffic-viz.github.io/clustering.html)
-
+[k-means](https://realpython.com/k-means-clustering-python/#evaluating-clustering-performance-using-advanced-techniques): no consigo que funciones de manera correcta
 
 
 
