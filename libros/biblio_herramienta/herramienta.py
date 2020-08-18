@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 from itertools import islice, cycle
 from traffic.drawing import countries, EuroPP
 from traffic.data import nm_airspaces
+from .tratardatos import guardarimagen
 
 
 def probartraffic():
@@ -80,7 +81,7 @@ def representarcluster(datos_cluster,nombre_cluster):
             )
             # la funcion de arriba busca la asginación de cluster
             ax_.set_global()
-            ax_.set_extent((-6,0, 42.7, 44.5))
+            ax_.set_extent(nm_airspaces['LECMBLU'])
             if cluster == -1:
                 ax_.title.set_text("Conjunto")
             else:
