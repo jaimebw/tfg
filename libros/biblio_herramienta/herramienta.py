@@ -50,6 +50,8 @@ def representarSobreSector(traffic_data,sector ='LECMBLU'):
 def ejesespaña():
     return (-6,0, 42.7, 44.5)
 
+
+"""
 def representarcluster(datos_cluster,nombre_cluster):
     # esta funcion representa el cluster, y lo guarda en una imagen
     n_clusters = 1 + datos_cluster.data.cluster.max() 
@@ -86,5 +88,55 @@ def representarcluster(datos_cluster,nombre_cluster):
                 ax_.title.set_text("Conjunto")
             else:
                 ax_.title.set_text("Cluster = " +str(cluster) )
+
+    guardarimagen("imagenes_cluster",nombre_cluster)   
+"""
+
+
+def representarcluster(datos_cluster,nombre_cluster,iskmeans = False):
+    # esta funcion representa el cluster, y lo guarda en una imagen
+    n_clusters = 1 + datos_cluster.data.cluster.max() 
+    color_cycle = cycle(
+        "#a6cee3 #1f78b4 #b2df8a #33a02c #fb9a99 #e31a1c "
+        "#fdbf6f #ff7f00 #cab2d6 #6a3d9a #ffff99 #b15928".split()
+    )
+    colors = list(islice(color_cycle, n_clusters)) 
+    colors.append("#aaaaaa") 
+    
+    nb_cols = 3
+    nb_lines = (1 + n_clusters) // nb_cols + (((1 + n_clusters) % nb_cols) > 0)
+    
+    with plt.style.context("traffic"):
+        
+  
+        fig, ax = plt.subplots(
+            nb_lines, nb_cols, figsize=(10, 15), subplot_kw=dict(projection=EuroPP())
+            # parametros de la figura y de los ejes
+        )
+        if iskmeans == True:
+            for cluster in range(0, n_clusters):
+                ax_ = ax[(cluster + 1) // nb_cols][(cluster + 1) % nb_cols]
+                ax_.add_feature(countries())
+                nm_airspaces['LECMBLU'].plot(ax_,alpha = 1)
+
+                datos_cluster.query(f"cluster == {cluster}").plot(
+                    ax_, color=colors[cluster], alpha=0.1 if cluster == -1 else 1
+                )
+        else:
+            for cluster in range(-1, n_clusters):
+                ax_ = ax[(cluster + 1) // nb_cols][(cluster + 1) % nb_cols]
+                ax_.add_feature(countries())
+                nm_airspaces['LECMBLU'].plot(ax_,alpha = 1)
+
+                datos_cluster.query(f"cluster == {cluster}").plot(
+                    ax_, color=colors[cluster], alpha=0.1 if cluster == -1 else 1
+                )
+            # la funcion de arriba busca la asginación de cluster
+                ax_.set_global()
+                ax_.set_extent(nm_airspaces['LECMBLU'])
+                if cluster == -1:
+                    ax_.title.set_text("Conjunto")
+                else:
+                    ax_.title.set_text("Cluster = " +str(cluster) )
 
     guardarimagen("imagenes_cluster",nombre_cluster)
