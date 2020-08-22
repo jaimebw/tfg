@@ -12,26 +12,11 @@ def probartraffic():
     # prueba si las bibliotecas está bien instaladas
     try:
         import traffic
+        import sklearn
         print("Traffic instalado")
     except:
         print("La librería no esta correctamente instalada")
 
-def niveldevuelo(altitud_metros):
-    # devuelve el nivel de vuelo 
-    try:
-        fl = altitud_metros*3.28/1000
-        return fl
-    except:
-        pass
-
-def numeroaeronavesector(df):
-    import traffic
-        # saca el numero de aeronaves en la BBDD
-    try:
-        numero = df.data["callsign"].nunique()
-        print("El numero de aeronaves es de ",numero)
-    except:
-        print("La BBDD no está correctamente configurada")
 
 def representarSobreSector(traffic_data,sector ='LECMBLU'):
     # esta funcion representa las trayectorias dentro de la BBDD sobre el sector que se estudiar
@@ -51,7 +36,7 @@ def representarSobreSector(traffic_data,sector ='LECMBLU'):
 def ejesespaña():
     return (-6,0, 42.7, 44.5)
 
-def filtrardatos(datos,):
+def filtrardatos(datos):
     if not isinstance(datos,Traffic):
         datos = Traffic(datos)
     # condiciones del sector
