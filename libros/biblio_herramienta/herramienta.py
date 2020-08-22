@@ -131,7 +131,7 @@ def representarcluster(datos_cluster,nombre_cluster):
 """
 
 
-def representarcluster(datos_cluster,nombre_cluster,iskmeans = False):
+def representarcluster(datos_cluster,nombre_cluster,carpeta_imagenes,iskmeans = False):
     # esta funcion representa el cluster, y lo guarda en una imagen
     n_clusters = 1 + datos_cluster.data.cluster.max() 
     color_cycle = cycle(
@@ -175,6 +175,6 @@ def representarcluster(datos_cluster,nombre_cluster,iskmeans = False):
                 if cluster == -1:
                     ax_.title.set_text("Conjunto")
                 else:
-                    ax_.title.set_text("Cluster = " +str(cluster) )
+                    ax_.title.set_text("Cluster: " +str(cluster+1) )
 
-    guardarimagen("imagenes_cluster",nombre_cluster)
+    guardarimagen(carpeta_imagenes,nombre_cluster)
