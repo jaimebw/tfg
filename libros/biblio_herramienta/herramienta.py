@@ -5,7 +5,8 @@ from itertools import islice, cycle
 from traffic.drawing import countries, EuroPP
 from traffic.data import nm_airspaces
 from .tratardatos import guardarimagen
-
+import numpy as np
+from sklearn.impute import SimpleImputer
 
 def probartraffic():
     # prueba si las bibliotecas está bien instaladas
@@ -49,6 +50,58 @@ def representarSobreSector(traffic_data,sector ='LECMBLU'):
         
 def ejesespaña():
     return (-6,0, 42.7, 44.5)
+
+def filtrardatos(datos,):
+    if not isinstance(datos,Traffic):
+        datos = Traffic(datos)
+    # condiciones del sector
+    aviones_entierra =  datos.data[datos.data["onground"] == True].index 
+    datos.data.drop(aviones_entierra,inplace = True)
+    aviones_debajosector = datos.data[datos.data["altitude"] <= 34500].index
+    datos.data.drop(aviones_debajosector,inplace = True)
+    
+
+    # filtrado de datos no validos
+    datos = datos.clean_invalid()
+    datos = datos.drop_duplicates()
+
+    # filtrado de datos incompletos
+    Var_huecos = datos.data.columns[datos.data.isnull().any()]
+    # identificacion de filas con NaN
+    nan_rows = datos.data[datos.data.isnull().any(1)]
+
+    # identificacion de aeronaves con NaN
+    ave_huecos = nan_rows.callsign.value_counts()
+    list_ave = []
+    # identificacion de aeronaves con >10 fallos de recepción ADS-B
+    v_filtrado = datos
+    for count, values in enumerate(ave_huecos):
+        if values > 10:
+            list_ave.append(ave_huecos.index[count])
+            # se identifican las filas de las aeronaves y las eliminamos
+            rows = datos.data.loc[datos.data.callsign == ave_huecos.index[count]].index
+            v_filtrado = v_filtrado.drop(rows)
+
+    # se eliminan todas las filas que tienen NaN
+    v_filtrado = v_filtrado.data.dropna() # OJO devuelve un df no un Traffic
+    v_filtrado = traffic.core.Traffic(v_filtrado)
+    Var_huecos = []
+    # identificación de aeronaves con huecos
+    aves_huecos = []
+    # se cambian los nans por la media enter los dos valores
+    from sklearn.impute import SimpleImputer
+    my_imputer = SimpleImputer(missing_values=np.nan, strategy='mean')
+
+    #Aplicamos el método a cada aeronave:
+    for count, name in enumerate(aves_huecos):
+        ave_impute = pd.DataFrame(my_imputer.fit_transform(vuelos_prueba))
+    return v_filtrado
+
+
+
+
+
+    
 
 
 """
