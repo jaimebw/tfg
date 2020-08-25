@@ -15,7 +15,7 @@ def guardarimagen(carpeta_imagenes,nombre_figura):
         os.mkdir("imagenes_libros/"+carpeta_imagenes)
     plt.savefig(fname = "imagenes_libros/" + carpeta_imagenes+"/"+nombre_figura,dpi = 300)
     
-def guardarcsv(archivo, nombre_archivo,carpeta_datos_csv = "datos_sectores" ):
+def guardarcsv(archivo, nombre_archivo,carpeta_datos_csv = "datos_sectores/" ):
     # esta funciona genera una carpeta sino existe, y guarda los datos descargados en esta
     if not os.path.exists(carpeta_datos_csv):
         os.mkdir(carpeta_datos_csv)
