@@ -247,7 +247,7 @@ Script que se ejecuta
 start_time = time.time()
 carpetaDatos = r'/Users/jaimebowen/OneDrive/TFGSeptiembre/libros/datos_sectores/'
 nombreDatos = r"bilbao_f_cluster.csv"
-nombreDatos = r"datos_javi_filtrado.csv"
+#nombreDatos = r"datos_javi_filtrado.csv"
 carpetaImagenes = r"generacion_conflictos/"
 
 vuelos = cargardatos(carpetaDatos,nombreDatos) # se cargan los datos filtrados
