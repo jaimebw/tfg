@@ -61,6 +61,7 @@ def generadorDFconflictos(datos,pares):
         # Metemos esta información en un DataFrame para cada aeronave
         Datos_ave1 = Datos_ave1.append(init_values_ave1)
         Datos_ave2 = Datos_ave2.append(init_values_ave2)
+    
     columnas = ["alert", "callsign", "hour", "icao24", "last_position", "onground", "spi", "squawk"]
     Datos_fil_ave1 = Datos_ave1.drop(columns = columnas)
     Datos_fil_ave2 = Datos_ave2.drop(columns = columnas)
