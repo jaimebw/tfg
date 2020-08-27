@@ -9,7 +9,7 @@ from geographiclib.geodesic import Geodesic
 from biblio_herramienta.herramienta import *
 from biblio_herramienta.tratardatos import *
 from biblio_herramienta.conflictos import *
-start_time = time.time()
+
 
 
 """
@@ -17,7 +17,8 @@ Funciones:
 
 
 def origenmismoinstante(datos):
-    # pone los datos con el mismo origen independientemente del día
+	# 4.2.1 #
+    # reinicia el origen de tiempos de los datos al mismo instante inicial #
     if not isinstance(datos,Traffic):
         datos = Traffic(datos)
     timestamp = pd.Series([])
@@ -38,7 +39,8 @@ def origenmismoinstante(datos):
     return datos
 
 def crearparejas(datos):
-    # crea parejas de aviones
+	# 4.2.2 #
+    # crea las parejas de aeroanves en la BBDD #
     if not isinstance(datos,Traffic):
         datos = Traffic(datos)
     pairs = []
@@ -55,7 +57,8 @@ def crearparejas(datos):
 
 
 def generadorDFconflictos(datos,pares):
-    # genera los DF que realizan los conflictos
+	# 4.2.3 #
+    # agrupa los pares de las aeroanves con las características propias de cada una #
     if not isinstance(datos,Traffic):
         datos = Traffic(datos)
     Datos_ave1 = datos.data.iloc[0:0]
@@ -88,43 +91,32 @@ def generadorDFconflictos(datos,pares):
     return Datos_fil
 
 def calculomagnitudesrelativas(datos):
-    # Toda la información que necesitamos para ssaber como funciona es https://living-sun.com/es/python/693845-geopy-calculating-gps-heading-bearing-python-python-3x-gps-geo-geopy.html
+	# 4.2.4 #
+	# genera las mangitudes relativas de las aeronaves que funcionarán como características para la BBDD #
     acimut = []
     dist2 = []
-    # Tenemos que calcular para cada pareja de aeronaves, es deir para cada fila:
     for index, row in datos.iterrows():
-        # Seleccionamos cada una de las posiciones que aparecen en cada fila de aeronaves, en este caso en º y no en radianes
         lat1, lon1 = row['latitude_1'], row['longitude_1']
         lat2, lon2 = row['latitude_2'], row['longitude_2']
-        # Aplicamos la formula que nos dice y que nos proporciona todos los datos
         geo_calc = Geodesic.WGS84.Inverse(lat1, lon1, lat2, lon2)
-        # Calculamos los valores de acimut (azi1) y de separacion (dist2)
         dist2.append(geo_calc['s12']/1852)
         acimut.append(geo_calc['azi1'])
-
-    # La variable distance nos permite obtener la distancia en el instante inicial en el que entran las aeronaves (en NM)
-    # Introducimos la variable distance en el DataFrame
-    datos['Init separation'] = dist2
-    datos['Init acimut'] = acimut
+    datos['Init separation'] = dist2 # separación inical
+    datos['Init acimut'] = acimut    # acimut inicial
     acimut = []
     dist2 = []
-    # Tenemos que calcular para cada pareja de aeronaves, es deir para cada fila:
     for index, row in datos.iterrows():
         lat1, lon1 = row['latitude_1'], row['longitude_1']
         lat2, lon2 = row['latitude_2'], row['longitude_2']
-        # Aplicamos la formula que nos dice y que nos proporciona todos los datos
         data= Geodesic.WGS84.Inverse(lat1, lon1, lat2, lon2)
-        # Calculamos los valores de acimut (azi1) y de separacion (dist2)
         dist2.append(data['s12']/1852)
         acimut.append(data['azi1'])
     
-    # La variable distance nos permite obtener la distancia en el instante inicial en el que entran las aeronaves (en NM)
-    # Introducimos la variable distance en el DataFrame
     datos['Init separation'] = dist2
     datos['Init acimut'] = acimut
     from math import radians, sqrt, cos, sin
 
-    Var_vel_mod = []    # Variación de la velocidad en módulo por cada par de aeronaves
+    Var_vel_mod = []  # Variación de la velocidad en módulo por cada par de aeronaves
     Var_track = []    # Variacion del track entre ambas aeronaves
     # Tenemos que calcular para cada pareja de aeronaves, es deir para cada fila:
     for index, row in datos.iterrows():
@@ -140,8 +132,7 @@ def calculomagnitudesrelativas(datos):
         # Introducimos los valores de velocidad relativa en módulo y de track
         Var_vel_mod.append(Var_vel)
         Var_track.append(Var_angle)
-        # La variable distance nos permite obtener la distancia en el instante inicial en el que entran las aeronaves (en NM)
-    # Introducimos la variable distance en el DataFrame
+        # La variable distance permite obtener la distancia en el instante inicial en el que entran las aeronaves (enNM)
     datos['Var GS Module'] = Var_vel_mod
     datos['Var Track'] = Var_track
 
@@ -159,17 +150,17 @@ def calculomagnitudesrelativas(datos):
         Var_altitude.append(Var_alt)
         Var_Vertical_speed.append(Var_speed)
 
-    # Introducimos las variables de variación de altitud y de vertical speed
     datos['Var init altitude'] = Var_altitude
     datos['Var Vertical speed'] = Var_Vertical_speed
     return datos
 
 def conflict_detection(CPA_datos):
-    # Obtengo las filas en las que la mínima de separacion longitudinal es inferior a 5 MN
+	# 4.2.5 #
+    # obtiene las filas con una DMS longitudinal inferior a 5 NM #
     rows_lon = CPA_datos['lateral'] < 5
     CPA_datos_lon = CPA_datos[rows_lon]
     CPA_datos_lon
-    # De estas filas obtengo las que se cumple que es menor de 1000 ft la vertical
+    # de las filas anteriores obtiene las que se cumple que es menor de 1000 ft la vertical
     rows_vert = CPA_datos_lon['vertical'] < 1000
     CPA_conf = CPA_datos_lon[rows_vert]
     if len(CPA_conf) > 0:
@@ -191,6 +182,8 @@ def conflict_detection(CPA_datos):
 
 
 def paresconconflictos(CPA):
+	# 4.2.5 #
+	# obtiene los pares de aviones que pasan la DMS #
     label_ave1, label_ave2 = pd.Series(CPA["flight_id_x"].unique()), pd.Series(CPA["flight_id_y"].unique())
     pairs_CPA = pd.DataFrame({'flight_id_x': label_ave1, 'flight_id_y': label_ave2})
     conflict = []    # Matriz en la que vamos a guardar si hay conflicto o no
@@ -214,6 +207,8 @@ def paresconconflictos(CPA):
     return pairs_CPA
 
 def mod_conflictos(pairs_CPA, Datos_fil_con):
+	# 4.2.6 #
+	# genera la BBDD con los conflictos #
     # identificamos las filas que tienen conflicto
     Datos_final = Datos_fil_con
     rows_conflict = pairs_CPA['Conflicto'] == 1
@@ -245,12 +240,13 @@ def mod_conflictos(pairs_CPA, Datos_fil_con):
     return Datos_final
 """
 
+
 """
 Script que se ejecuta
 """
-
+start_time = time.time()
 carpetaDatos = r'/Users/jaimebowen/OneDrive/TFGSeptiembre/libros/datos_sectores/'
-#nombreDatos = r"bilbao_f_cluster.csv"
+nombreDatos = r"bilbao_f_cluster.csv"
 nombreDatos = r"datos_javi_filtrado.csv"
 carpetaImagenes = r"generacion_conflictos/"
 
@@ -262,14 +258,17 @@ vuelosp = origenmismoinstante(vuelosp) # se les pasa al mismo instante
 pairs = crearparejas(vuelosp)
 
 datos_fil = generadorDFconflictos(vuelosp,pairs)
-guardarcsv(datos_fil,"datos_f_c_pares_javi")
-os.system('say "terminado df conflictos"')
+guardarcsv(datos_fil,"datos_f_c_pares_bilbao")
+print("Datos fil hecho")
+#os.system('say "terminado df conflictos"')
 datos_fil = calculomagnitudesrelativas(datos_fil)
-guardarcsv(datos_fil,"datos_f_c_pares_relativo_javi")
-os.system('say "terminado magnitudes realtivas"')
+guardarcsv(datos_fil,"datos_f_c_pares_relativo_bilbao")
+print("Datos magnitudes hecho")
+#os.system('say "terminado magnitudes realtivas"')
 CPA = vuelosp.closest_point_of_approach(lateral_separation = 10*1852, vertical_separation = 2000)
-os.system('say "terminado CPA"')
+#os.system('say "terminado CPA"')
 pairs_CPA = paresconconflictos(CPA)
+print("Datos CPA hecho")
 
 Datos_fil_con = datos_fil
 Datos_fil_con["Conflicto"] = 0
@@ -277,31 +276,12 @@ Datos_fil_con["MinDis"] = 10
 Datos_fil_con["Timetoconf"] = 10000
 
 BBDD = mod_conflictos(pairs_CPA, Datos_fil_con)
-os.system('say "terminado mod conflictos"')
-,SCmkp+dvq+opmo     jiqm 
+guardarcsv(BBDD_2, "BBDD_bilbao")
+#os.system('say "terminado mod conflictos"')
 BBDD_2 = BBDD
 var_eliminar = ['ave1', 'ave2', 'groundspeed_1', 'timestamp_1', 'vertical_rate_1', 'track_1', 'altitude_2', 'geoaltitude_2',
                 'latitude_2', 'longitude_2','timestamp_2','groundspeed_2','track_2','vertical_rate_2']
 BBDD_2 = BBDD_2.drop(var_eliminar, axis = 'columns')
-guardarcsv(BBDD_2, "BBDD_javi2")
-con = BBDD_2.loc[(BBDD_2['Conflicto'] == 1)]
-columnas = ['cluster_1', 'cluster_2']
-flujos_con_cruce = con[columnas].drop_duplicates()
-Flujo_1 = flujos_con_cruce.iloc[0]
-
-BBDD_Flujos = BBDD_2.loc[BBDD_2['cluster_1'] == Flujo_1['cluster_1']]
-BBDD_Flujos = BBDD_Flujos.loc[BBDD_2['cluster_2'] == Flujo_1['cluster_2']]
-
-# Si no el siguiente paso sería obtener una matriz para cada uno de los flujos conflictos para que se automatice
-# Aquí lo estamos calculando para las aeronaves del flujo 1 con el 0 por ejemplo, pero del 0 al 1 es otro flujo
-j = 1
-for i, flow in flujos_con_cruce.iterrows():
-    # Seleccionamos de la BBDD las filas que cumplen el cluster_1
-    filas_1 = BBDD_2.loc[BBDD_2['cluster_1'] == flow['cluster_1']]
-    # Seleccionamos del primer filtrado las filas que cumplen el cluster_2
-    filas_2 = filas_1.loc[filas_1['cluster_2'] == flow['cluster_2']]
-    # Le damos un nombre con un número distinto a cada una de las matrices
-    exec('Flujos{} = filas_2'.format(j))
-    j = j + 1
-# Con este paso ya hemos conseguido programar la subdivisión de los flujos para que lo haga de golpe y nos saquen tantas matrices como necesitamos
-print("--- %s seconds ---" % (time.time() - start_time))
+guardarcsv(BBDD_2, "BBDD_bilbao2")
+print("El proceso ha durado:\n")
+print("--- %s horas ---" % (time.time()/3600 - start_time/3600))
