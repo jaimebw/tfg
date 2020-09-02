@@ -6,7 +6,7 @@ Esta carpeta contiene todos los libros que se han creado en la elaboración del 
 4. [Filtrado de los datos obtenidos del sector ](https://github.com/jaimebw/tfg/blob/master/libros/filtrado_datos.ipynb)
 5. [Filtrado por cluster](https://github.com/jaimebw/tfg/blob/master/libros/filtrado_cluster.ipynb)
 6. [Generación de la BBDD con conflictos](https://github.com/jaimebw/tfg/blob/master/libros/generacion_conflictos.ipynb)  
-
+7. [Aplicación de ténicas de apredendizake supervisado](https://github.com/jaimebw/tfg/blob/19372715afb25b5e605d7bff28a457ca2efa9914/libros/aplicacion_ml.ipynb)
 
 ## Otros libros usados en el desarrollo del TFG
 1. [Cluster de datos](https://github.com/jaimebw/tfg/blob/master/libros/cluster.ipynb)
