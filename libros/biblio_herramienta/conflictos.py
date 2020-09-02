@@ -4,6 +4,7 @@ import pandas as pd
 import os
 import matplotlib.pyplot as plt
 import datetime
+import numpy as np
 from geographiclib.geodesic import Geodesic
 
 
@@ -27,6 +28,9 @@ def origenmismoinstante(datos):
         timestamp = timestamp.append(tray2_timestamp)
     datos.data.timestamp = timestamp
     return datos
+
+ 
+
 
 def crearparejas(datos):
     # crea parejas de aviones
@@ -79,80 +83,37 @@ def generadorDFconflictos(datos,pares):
     return Datos_fil
 
 def calculomagnitudesrelativas(datos):
-    # Toda la información que necesitamos para ssaber como funciona es https://living-sun.com/es/python/693845-geopy-calculating-gps-heading-bearing-python-python-3x-gps-geo-geopy.html
-    acimut = []
-    dist2 = []
-    # Tenemos que calcular para cada pareja de aeronaves, es deir para cada fila:
-    for index, row in datos.iterrows():
-        # Seleccionamos cada una de las posiciones que aparecen en cada fila de aeronaves, en este caso en º y no en radianes
-        lat1, lon1 = row['latitude_1'], row['longitude_1']
-        lat2, lon2 = row['latitude_2'], row['longitude_2']
-        # Aplicamos la formula que nos dice y que nos proporciona todos los datos
-        geo_calc = Geodesic.WGS84.Inverse(lat1, lon1, lat2, lon2)
-        # Calculamos los valores de acimut (azi1) y de separacion (dist2)
-        dist2.append(geo_calc['s12']/1852)
-        acimut.append(geo_calc['azi1'])
-
-    # La variable distance nos permite obtener la distancia en el instante inicial en el que entran las aeronaves (en NM)
-    # Introducimos la variable distance en el DataFrame
-    datos['Init separation'] = dist2
-    datos['Init acimut'] = acimut
-    acimut = []
-    dist2 = []
-    # Tenemos que calcular para cada pareja de aeronaves, es deir para cada fila:
-    for index, row in datos.iterrows():
-        lat1, lon1 = row['latitude_1'], row['longitude_1']
-        lat2, lon2 = row['latitude_2'], row['longitude_2']
-        # Aplicamos la formula que nos dice y que nos proporciona todos los datos
-        data= Geodesic.WGS84.Inverse(lat1, lon1, lat2, lon2)
-        # Calculamos los valores de acimut (azi1) y de separacion (dist2)
-        dist2.append(data['s12']/1852)
-        acimut.append(data['azi1'])
-    
-    # La variable distance nos permite obtener la distancia en el instante inicial en el que entran las aeronaves (en NM)
-    # Introducimos la variable distance en el DataFrame
-    datos['Init separation'] = dist2
-    datos['Init acimut'] = acimut
     from math import radians, sqrt, cos, sin
 
-    Var_vel_mod = []    # Variación de la velocidad en módulo por cada par de aeronaves
-    Var_track = []    # Variacion del track entre ambas aeronaves
-    # Tenemos que calcular para cada pareja de aeronaves, es deir para cada fila:
-    for index, row in datos.iterrows():
-        # Seleccionamos cada una de las posiciones que aparecen en cada fila de aeronaves, en este caso en º y no en radianes
-        vel1, vel2 = row['groundspeed_1'], row['groundspeed_2']
-        track1, track2 = row['track_1'], row['track_2']
-        # Calculamos la variación del track de la ave 1 con respecto a la 2
-        Var_angle = track1 - track2
-        # Calculamos la variación de la velocidad en módulo
+    # Toda la información que necesitamos para ssaber como funciona es https://living-sun.com/es/python/693845-geopy-calculating-gps-heading-bearing-python-python-3x-gps-geo-geopy.html
+    def geo_calcs12(lat1,lon1,lat2,lon2):
+        return Geodesic.WGS84.Inverse(lat1, lon1, lat2, lon2)['s12']/1852
+    def geo_calcsazi1(lat1,lon1,lat2,lon2):
+        return Geodesic.WGS84.Inverse(lat1, lon1, lat2, lon2)['azi1']
+
+    datos['Init separation'] = np.vectorize(geo_calcs12)(datos['latitude_1'],datos['longitude_1'],datos['latitude_2'],datos['longitude_2'])
+    datos['Init acimut'] = np.vectorize(geo_calcsazi1)(datos['latitude_1'],datos['longitude_1'],datos['latitude_2'],datos['longitude_2'])
+  
+
+
+    def var_track(track1,track2):
+        return track1 - track2
+    def var_vel(vel1,vel2,track1,track2):
         vel1_x, vel1_y = vel1*cos(radians(90-track1)), vel1 * sin(radians(90-track1))
         vel2_x, vel2_y = vel2*cos(radians(90-track2)), vel2 * sin(radians(90-track2))
         Var_vel = sqrt((vel1_x - vel2_x)**2 + (vel1_y - vel2_y)**2)
-        # Introducimos los valores de velocidad relativa en módulo y de track
-        Var_vel_mod.append(Var_vel)
-        Var_track.append(Var_angle)
-        # La variable distance nos permite obtener la distancia en el instante inicial en el que entran las aeronaves (en NM)
-    # Introducimos la variable distance en el DataFrame
-    datos['Var GS Module'] = Var_vel_mod
-    datos['Var Track'] = Var_track
-
-    Var_altitude = []    # Variación de la velocidad en módulo por cada par de aeronaves
-    Var_Vertical_speed = []    # Variacion del track entre ambas aeronaves
-    # Tenemos que calcular para cada pareja de aeronaves, es deir para cada fila:
-    for index, row in datos.iterrows():
-        # Seleccionamos cada una de las posiciones que aparecen en cada fila de aeronaves
-        alt1, alt2 = row['altitude_1'], row['altitude_2']
-        hspeed_1, hspeed_2 = row['vertical_rate_1'], row['vertical_rate_2']
-        # Calculamos la variación de altitude y de velocidad vertical
-        Var_alt = alt1 - alt2
-        Var_speed = hspeed_1 - hspeed_2
-        # Introducimos los valores de altitud y de velocidad relativa
-        Var_altitude.append(Var_alt)
-        Var_Vertical_speed.append(Var_speed)
-
-    # Introducimos las variables de variación de altitud y de vertical speed
-    datos['Var init altitude'] = Var_altitude
-    datos['Var Vertical speed'] = Var_Vertical_speed
+        return Var_vel
+    datos['Var GS Module'] = np.vectorize(var_vel)(datos['groundspeed_1'],datos['groundspeed_2'],datos['track_1'],datos['track_2'])
+    datos['Var Track'] = np.vectorize(var_track)(datos['track_1'],datos['track_2'])
+    
+    def init_altitude(alt1,alt2):
+        return alt1-alt2
+    
+    def vert_speed(vrate1,vrate2):
+        return vrate1 -vrate2
+    datos['Var init altitude'] = np.vectorize(init_altitude)(datos['altitude_1'],datos['altitude_2'])
+    datos['Var Vertical speed'] = np.vectorize(vert_speed)(datos['vertical_rate_1'],datos['vertical_rate_2'])
+    
     return datos
 
 def conflict_detection(CPA_datos):
@@ -307,6 +268,27 @@ def generadorDFconflictos(datos,pares):
     # Una vez comproado que funcion vamos a eliminar las columans de flight_id_1 y flight_id_2 para que no se repitan
     Datos_fil = Datos_fil.drop(columns = ['flight_id_1', 'flight_id_2'])
     return Datos_fil
+    
+def origenmismoinstante(datos):
+    # pone los datos con el mismo origen independientemente del día
+    if not isinstance(datos,Traffic):
+        datos = Traffic(datos)
+    timestamp = pd.Series([])
+    listado_aves = datos.data.flight_id.unique()
+    for ave in listado_aves:
+    # Seleccionamos la trayectoria de la aeronave y creamos una copia 
+        tray = datos[ave].data
+        tray2 = tray
+        
+        # Seleccionamos el instante de tiempo inicial
+        init_time = tray.timestamp.iloc[0]
+        # El instante inicial lo restamos, hay que tener cuidado con que no se convierta en timedelta ya que el formato es datetime
+        # añadida parte para poder poner datos de varios días
+        tray2_timestamp = tray.timestamp - datetime.timedelta(days = init_time.day, hours = init_time.hour, minutes = init_time.minute, seconds = init_time.second)
+        #Los nuevos timestamp los metemos en una columna que más tarde la cambiaremos para que coincida con todos los vuelos de la BBDD
+        timestamp = timestamp.append(tray2_timestamp)
+    datos.data.timestamp = timestamp
+    return datos
 """
 
 
