@@ -146,3 +146,4 @@ libros_a_scripts/biblio_herramienta
 libros_a_scripts/datos_sectores
 libros/kmeans.ipynb
 otro/
+libros_a_scripts/solo_cpa.py
