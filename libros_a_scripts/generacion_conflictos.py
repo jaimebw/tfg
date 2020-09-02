@@ -265,9 +265,11 @@ datos_fil = calculomagnitudesrelativas(datos_fil)
 guardarcsv(datos_fil,"datos_f_c_pares_relativo_bilbao")
 print("Datos magnitudes hecho")
 #os.system('say "terminado magnitudes realtivas"')
-CPA = vuelosp.closest_point_of_approach(lateral_separation = 10*1852, vertical_separation = 2000)
+CPA = vuelosp.closest_point_of_approach(lateral_separation = 10*1852, vertical_separation = 2000, max_workers=4)
+guardarcsv(CPA,"cpa_bilbao")
 #os.system('say "terminado CPA"')
 pairs_CPA = paresconconflictos(CPA)
+guardarcsv(pairs_CPA,"pares_cpa_bilbao")
 print("Datos CPA hecho")
 
 Datos_fil_con = datos_fil
@@ -276,7 +278,7 @@ Datos_fil_con["MinDis"] = 10
 Datos_fil_con["Timetoconf"] = 10000
 
 BBDD = mod_conflictos(pairs_CPA, Datos_fil_con)
-guardarcsv(BBDD_2, "BBDD_bilbao")
+guardarcsv(BBDD, "BBDD_bilbao")
 #os.system('say "terminado mod conflictos"')
 BBDD_2 = BBDD
 var_eliminar = ['ave1', 'ave2', 'groundspeed_1', 'timestamp_1', 'vertical_rate_1', 'track_1', 'altitude_2', 'geoaltitude_2',
