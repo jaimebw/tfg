@@ -17,8 +17,8 @@ def curvaROC(pipe,X_train,y_train):
         plt.plot(fpr, tpr, linewidth=2, label=label)
         plt.plot([0, 1], [0, 1], 'k--')
         plt.axis([0, 1, 0, 1])
-        plt.xlabel('False Positive Rate')
-        plt.ylabel('True Positive Rate')
+        plt.xlabel('Ratio de Falsos Positivos')
+        plt.ylabel('Ratio de Verdaderos Positivos')
 
     plot_roc_curve(fpr, tpr)
     plt.show()
