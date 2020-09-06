@@ -1,9 +1,22 @@
 import numpy as np
 import pandas as pd
-from sklearn.metrics import roc_curve,precision_recall_curve
+from sklearn.metrics import roc_curve,precision_recall_curve,accuracy_score,f1_score,recall_score,balanced_accuracy_score,precision_score
 from sklearn.model_selection import cross_val_predict
 import matplotlib.pyplot as plt
 
+def metricas(pipes_lin_entrenadas,X_test, y_test,nombre_algoritmos):
+    exactitud_lineales = []
+    exactitud_lineales_b = []
+    sensibilidad_lineales = []
+    precision_lineales = []
+    f1_lineales = []
+    for i in pipes_lin_entrenadas:
+        precision_lineales.append(precision_score(y_test,i.predict(X_test)))
+        exactitud_lineales.append(accuracy_score(y_test,i.predict(X_test)))
+        f1_lineales.append(f1_score(y_test,i.predict(X_test)))
+        sensibilidad_lineales.append(recall_score(y_test,i.predict(X_test)))
+    clasificadores = pd.DataFrame({"Clasificador":nombre_algoritmos,"Exactitud":exactitud_lineales,"Precision":precision_lineales,"Sensibilidad":sensibilidad_lineales,"F1":f1_lineales})
+    return clasificadores
 
 def curvaROC(pipe,X_train,y_train):
     # representa la curva roc
