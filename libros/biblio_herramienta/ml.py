@@ -4,24 +4,30 @@ from sklearn.metrics import roc_curve,precision_recall_curve,accuracy_score,f1_s
 from sklearn.model_selection import cross_val_predict
 import matplotlib.pyplot as plt
 
-def metricas(pipes_lin_entrenadas,X_test, y_test,nombre_algoritmos):
+def metricas(pipe_sin_entrenar,X_train, y_train,nombre_algoritmos):
+    
     exactitud_lineales = []
     exactitud_lineales_b = []
     sensibilidad_lineales = []
     precision_lineales = []
     f1_lineales = []
-    for i in pipes_lin_entrenadas:
-        precision_lineales.append(precision_score(y_test,i.predict(X_test)))
-        exactitud_lineales.append(accuracy_score(y_test,i.predict(X_test)))
-        f1_lineales.append(f1_score(y_test,i.predict(X_test)))
-        sensibilidad_lineales.append(recall_score(y_test,i.predict(X_test)))
+    for i in pipe_sin_entrenar:
+        y_train_pred = cross_val_predict(i, X_train, y_train, cv=7)
+        precision_lineales.append(precision_score(y_train,y_train_pred ))
+        exactitud_lineales.append(accuracy_score(y_train,y_train_pred ))
+        f1_lineales.append(f1_score(y_train,y_train_pred ))
+        sensibilidad_lineales.append(recall_score(y_train,y_train_pred ))
     clasificadores = pd.DataFrame({"Clasificador":nombre_algoritmos,"Exactitud":exactitud_lineales,"Precision":precision_lineales,"Sensibilidad":sensibilidad_lineales,"F1":f1_lineales})
     return clasificadores
 
 def curvaROC(pipe,X_train,y_train):
     # representa la curva roc
-    y_scores = cross_val_predict(pipe, X_train, y_train, cv=3,
+    try:
+        y_scores = cross_val_predict(pipe, X_train, y_train, cv=3,
                                  method="decision_function")
+    except:
+        y_scores = cross_val_predict(pipe, X_train, y_train, cv=3,
+                                 method="predict_proba")
 
     fpr, tpr, thresholds = roc_curve(y_train, y_scores)
 
@@ -49,3 +55,20 @@ def plot_precision_recall_vs_threshold(pipe,X_train,y_train):
     plot_precision_recall_vs_threshold(precisions, recalls, thresholds)
     plt.show()
 
+"""
+def metricasp(pipe_sin_entrenar,X_train, y_train,nombre_algoritmos):
+    exactitud_lineales = []
+    exactitud_lineales_b = []
+    sensibilidad_lineales = []
+    precision_lineales = []
+    f1_lineales = []
+    for i in pipe_sin_entrenar:
+        y_train_pred = cross_val_predict(i, X_train, y_train, cv=7)
+        precision_lineales.append(precision_score(y_train,y_train_pred ))
+        exactitud_lineales.append(accuracy_score(y_train,y_train_pred ))
+        f1_lineales.append(f1_score(y_train,y_train_pred ))
+        sensibilidad_lineales.append(recall_score(y_train,y_train_pred ))
+    clasificadores = pd.DataFrame({"Clasificador":nombre_algoritmos,"Exactitud":exactitud_lineales,"Precision":precision_lineales,"Sensibilidad":sensibilidad_lineales,"F1":f1_lineales})
+    return clasificadores
+
+"""
