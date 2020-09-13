@@ -6,4 +6,4 @@ Esta carpeta contiene todos los scripts que se han creado en la elaboración del
 4. [Filtrado de los datos obtenidos del sector ](https://github.com/jaimebw/tfg/blob/master/libros_a_scripts/filtrado_datos.py)
 5. [Filtrado por cluster](https://github.com/jaimebw/tfg/blob/master/libros/filtrado_cluster.ipynb): este filtrado no se encuentra disponible en script dado que se necesita poder representar el cluster
 6. [Generación de la BBDD con conflictos](https://github.com/jaimebw/tfg/blob/master/libros_a_scripts/generacion_conflictos.py)
-7. [Aplicación de las técnicas de apredendizaje supervisado](https://github.com/jaimebw/tfg/blob/master/libros_a_script/aplicacion_ml.py)  
+7. [Aplicación de las técnicas de apredendizaje supervisado](https://github.com/jaimebw/tfg/blob/master/libros_a_scripts/aplicacion_ml.py)  
